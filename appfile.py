@@ -36,18 +36,23 @@ if st.button("Convert"):
         result = freq_noise_to_phase_noise(input_value)
     elif input_unit == "Frequency Noise [Hz/√Hz]" and output_unit == "Frequency Noise [Hz²/Hz]":
         result = freq_noise_to_freq_noise_psd(input_value)
+    elif input_unit == "Frequency Noise [Hz/√Hz]" and output_unit == "Phase Noise [dB (rad/√Hz)]":
+        result = freq_noise_to_phase_noise_db(input_value)
+        
     elif input_unit == "Frequency Noise [Hz²/Hz]" and output_unit == "Frequency Noise [Hz/√Hz]":
         result = freq_noise_psd_to_freq_noise(input_value)
     elif input_unit == "Frequency Noise [Hz²/Hz]" and output_unit == "Phase Noise [μrad/√Hz]":
-        result = freq_psd_to_phase_noise(input_value)
-    elif input_unit == "Frequency Noise [Hz/√Hz]" and output_unit == "Phase Noise [dB (rad/√Hz)]":
-        result = freq_noise_to_phase_noise_db(input_value)
+        result = freq_psd_to_phase_noise(input_value) 
     elif input_unit == "Frequency Noise [Hz²/Hz]" and output_unit == "Phase Noise [dB (rad/√Hz)]":
         result = freq_psd_to_phase_noise_db(input_value)
+        
     elif input_unit == "Phase Noise [μrad/√Hz]" and output_unit == "Frequency Noise [Hz/√Hz]":
         result = phase_noise_to_freq_noise(input_value)
     elif input_unit == "Phase Noise [μrad/√Hz]" and output_unit == "Phase Noise [dB (rad/√Hz)]":
         result = phase_noise_to_db(input_value)
+    elif input_unit == "Phase Noise [μrad/√Hz]" and output_unit == "Frequency Noise [Hz²/Hz]":
+        result = phase_noise_to_freq_noise_psd(input_value)
+        
     elif input_unit == "Phase Noise [dB (rad/√Hz)]" and output_unit == "Phase Noise [μrad/√Hz]":
         result = db_to_phase_noise(input_value)
     elif input_unit == "Phase Noise [dB (rad/√Hz)]" and output_unit == "Frequency Noise [Hz/√Hz]":
@@ -58,4 +63,3 @@ if st.button("Convert"):
         result = "Conversion not available."
 
     st.success(f"Result: {result:.3e} {output_unit}")
-
