@@ -11,58 +11,82 @@ import numpy as np
 delay_line_length = 1  # meter
 tau = delay_line_length * 5e-9  # seconds
 
-def freq_noise_to_phase_noise(freq_noise_sqrt):
-    S_nu = freq_noise_sqrt ** 2  # Convert to Hz^2/Hz
-    S_phi_differ = ((2 * np.pi * tau) ** 2) * S_nu  # Convert to rad^2/Hz
+# ============================
+# Frequency Noise ↔ Phase Noise
+# ============================
+
+def freq_noise_sqrt_to_phase_noise_sqrt(freq_noise_sqrt):
+    """Convert Frequency Noise [Hz/√Hz] → Phase Noise [μrad/√Hz]"""
+    S_nu = freq_noise_sqrt ** 2  # Hz²/Hz
+    S_phi_differ = ((2 * np.pi * tau) ** 2) * S_nu  # rad²/Hz
     return np.sqrt(S_phi_differ) * 1e6  # μrad/√Hz
 
-def phase_noise_to_freq_noise(phase_noise_micro_rad_differ):
-    S_phi_differ = (phase_noise_micro_rad_differ * 1e-6) ** 2  # rad^2/Hz
-    S_nu = S_phi_differ / ((2 * np.pi * tau) ** 2)  # Hz^2/Hz
+def phase_noise_sqrt_to_freq_noise_sqrt(phase_noise_micro_rad_sqrt):
+    """Convert Phase Noise [μrad/√Hz] → Frequency Noise [Hz/√Hz]"""
+    S_phi_differ = (phase_noise_micro_rad_sqrt * 1e-6) ** 2  # rad²/Hz
+    S_nu = S_phi_differ / ((2 * np.pi * tau) ** 2)  # Hz²/Hz
     return np.sqrt(S_nu)  # Hz/√Hz
 
-def phase_noise_to_freq_noise_psd(phase_noise_micro_rad_differ):
-    S_phi_differ = (phase_noise_micro_rad_differ * 1e-6) ** 2  # rad^2/Hz
-    S_nu = S_phi_differ / ((2 * np.pi * tau) ** 2)  # Hz^2/Hz
-    return S_nu  # Hz^2/Hz
-
-def freq_noise_to_freq_noise_sqrt(S_nu):
-    return np.sqrt(S_nu)  # Hz/√Hz
-
-def freq_noise_sqrt_to_freq_noise(S_nu):
-    return (S_nu)** 2  # Hz^2/Hz
-
-def freq_psd_to_phase_noise(S_nu):
-    S_phi_differ = ((2 * np.pi * tau) ** 2) * S_nu  # rad^2/Hz
+def freq_noise_to_phase_noise_sqrt(freq_noise_psd):
+    """Convert Frequency Noise [Hz²/Hz] → Phase Noise [μrad/√Hz]"""
+    S_phi_differ = ((2 * np.pi * tau) ** 2) * freq_noise_psd  # rad²/Hz
     return np.sqrt(S_phi_differ) * 1e6  # μrad/√Hz
 
-def phase_noise_to_db(phase_noise_micro_rad_differ):
-    S_phi_differ = (phase_noise_micro_rad_differ * 1e-6) ** 2  # rad^2/Hz
-    S_phi_db = 10 * np.log10(S_phi_differ)  # dB(rad^2/Hz)
-    return S_phi_db
+def phase_noise_sqrt_to_freq_noise(phase_noise_micro_rad_sqrt):
+    """Convert Phase Noise [μrad/√Hz] → Frequency Noise [Hz²/Hz]"""
+    S_phi_differ = (phase_noise_micro_rad_sqrt * 1e-6) ** 2  # rad²/Hz
+    return S_phi_differ / ((2 * np.pi * tau) ** 2)  # Hz²/Hz
 
-def db_to_phase_noise(phase_noise_db):
-    S_phi_differ = 10 ** (phase_noise_db / 10)  # rad^2/Hz
-    return np.sqrt(S_phi_differ) * 1e6  # μrad/√Hz
+# ================================
+# Frequency Noise ↔ dB Phase Noise
+# ================================
 
-def freq_noise_to_phase_noise_db(freq_noise_sqrt):
-    S_nu = freq_noise_sqrt ** 2  # Hz^2/Hz
-    S_phi_differ = ((2 * np.pi * tau) ** 2) * S_nu  # rad^2/Hz
-    S_phi_db = 10 * np.log10(S_phi_differ)  # dB(rad^2/Hz)
-    return S_phi_db
+def freq_noise_sqrt_to_phase_noise_db(freq_noise_sqrt):
+    """Convert Frequency Noise [Hz/√Hz] → Phase Noise [dB (rad/√Hz)]"""
+    S_nu = freq_noise_sqrt ** 2  # Hz²/Hz
+    S_phi_differ = ((2 * np.pi * tau) ** 2) * S_nu  # rad²/Hz
+    return 10 * np.log10(S_phi_differ)  # dB(rad²/Hz)
 
-def freq_psd_to_phase_noise_db(S_nu):
-    S_phi_differ = ((2 * np.pi * tau) ** 2) * S_nu  # rad^2/Hz
-    S_phi_db = 10 * np.log10(S_phi_differ)  # dB(rad^2/Hz)
-    return S_phi_db
+def freq_noise_to_phase_noise_db(freq_noise_psd):
+    """Convert Frequency Noise [Hz²/Hz] → Phase Noise [dB (rad/√Hz)]"""
+    S_phi_differ = ((2 * np.pi * tau) ** 2) * freq_noise_psd  # rad²/Hz
+    return 10 * np.log10(S_phi_differ)  # dB(rad²/Hz)
 
-def db_to_freq_noise(phase_noise_db):
-    S_phi_differ = 10 ** (phase_noise_db / 10)  # rad^2/Hz
-    S_nu = S_phi_differ / ((2 * np.pi * tau) ** 2)  # Hz^2/Hz
+def phase_noise_db_to_freq_noise_sqrt(phase_noise_db):
+    """Convert Phase Noise [dB (rad/√Hz)] → Frequency Noise [Hz/√Hz]"""
+    S_phi_differ = 10 ** (phase_noise_db / 10)  # rad²/Hz
+    S_nu = S_phi_differ / ((2 * np.pi * tau) ** 2)  # Hz²/Hz
     return np.sqrt(S_nu)  # Hz/√Hz
 
-def db_to_freq_noise_psd(phase_noise_db):
-    S_phi_differ = 10 ** (phase_noise_db / 10)  # rad^2/Hz
-    S_nu = S_phi_differ / ((2 * np.pi * tau) ** 2)  # Hz^2/Hz
-    return S_nu  # Hz^2/Hz
+def phase_noise_db_to_freq_noise(phase_noise_db):
+    """Convert Phase Noise [dB (rad/√Hz)] → Frequency Noise [Hz²/Hz]"""
+    S_phi_differ = 10 ** (phase_noise_db / 10)  # rad²/Hz
+    return S_phi_differ / ((2 * np.pi * tau) ** 2)  # Hz²/Hz
+
+# ================================
+# Phase Noise ↔ dB Phase Noise
+# ================================
+
+def phase_noise_sqrt_to_phase_noise_db(phase_noise_micro_rad_sqrt):
+    """Convert Phase Noise [μrad/√Hz] → Phase Noise [dB (rad/√Hz)]"""
+    S_phi_differ = (phase_noise_micro_rad_sqrt * 1e-6) ** 2  # rad²/Hz
+    return 10 * np.log10(S_phi_differ)  # dB(rad²/Hz)
+
+def phase_noise_db_to_phase_noise_sqrt(phase_noise_db):
+    """Convert Phase Noise [dB (rad/√Hz)] → Phase Noise [μrad/√Hz]"""
+    S_phi_differ = 10 ** (phase_noise_db / 10)  # rad²/Hz
+    return np.sqrt(S_phi_differ) * 1e6  # μrad/√Hz
+
+# ================================
+# Frequency Noise ↔ Frequency Noise
+# ================================
+
+def freq_noise_sqrt_to_freq_noise(freq_noise_sqrt):
+    """Convert Frequency Noise [Hz/√Hz] → Frequency Noise [Hz²/Hz]"""
+    return freq_noise_sqrt ** 2  # Hz²/Hz
+
+def freq_noise_to_freq_noise_sqrt(freq_noise_psd):
+    """Convert Frequency Noise [Hz²/Hz] → Frequency Noise [Hz/√Hz]"""
+    return np.sqrt(freq_noise_psd)  # Hz/√Hz
+
 
